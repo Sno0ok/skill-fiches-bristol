@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fiches Pythagore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+/* ===== Page (thème clair/sombre) — les cartes restent toujours couleur papier ===== */
+:root{
+  --page-bg:#e9e4d8; --page-texte:#2b2b2b; --page-doux:#6b6458; --barre-bg:rgba(255,255,255,.85);
+  --papier:#fffdf6; --ligne:#cfe0f3; --marge:#f2a3a3; --encre:#1f2a44; --doux:#5b6475;
+  --rouge:#d63b3b; --rouge-pale:#fde8e8; --jaune:#fff3a3; --vert:#2f9e62; --vert-pale:#e3f6ea;
+  --accent:#2f6fd6; --accent-pale:#e4eefc;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--page-bg:#1d1f24; --page-texte:#ececec; --page-doux:#a5a9b3; --barre-bg:rgba(30,32,38,.9);}
+}
+:root[data-theme="dark"]{--page-bg:#1d1f24; --page-texte:#ececec; --page-doux:#a5a9b3; --barre-bg:rgba(30,32,38,.9);}
+
+/* Couleur par matière */
+[data-matiere="maths"]{--accent:#2f6fd6; --accent-pale:#e4eefc}
+[data-matiere="physique"]{--accent:#7a4cc9; --accent-pale:#efe8fb}
+[data-matiere="svt"]{--accent:#2f9e62; --accent-pale:#e3f6ea}
+[data-matiere="histoire"]{--accent:#b8652a; --accent-pale:#fbeee2}
+[data-matiere="francais"]{--accent:#c23a5a; --accent-pale:#fbe6ec}
+[data-matiere="langues"]{--accent:#138a8a; --accent-pale:#dff4f4}
+[data-matiere="philo"]{--accent:#4b4fb8; --accent-pale:#e8e9fb}
+[data-matiere="eco"]{--accent:#c2408f; --accent-pale:#fbe5f3}
+[data-matiere="info"]{--accent:#3d7a2a; --accent-pale:#e7f3e2}
+[data-matiere="autre"]{--accent:#55606e; --accent-pale:#eceef1}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page-bg); color:var(--page-texte); font-family:Nunito,system-ui,sans-serif; padding:0 16px 48px}
+
+.barre{position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between;
+  max-width:820px; margin:0 auto; padding:12px 0; background:var(--barre-bg); backdrop-filter:blur(6px)}
+.barre h1{font-family:Caveat,cursive; font-size:2rem; margin:0; line-height:1}
+.barre p{margin:2px 0 0; color:var(--page-doux); font-size:.85rem}
+.barre .actions{display:flex; gap:8px}
+.barre button{font:inherit; font-weight:700; font-size:.85rem; border:0; border-radius:999px; padding:8px 14px; cursor:pointer;
+  background:var(--page-texte); color:var(--page-bg)}
+.barre button.second{background:transparent; color:var(--page-texte); box-shadow:inset 0 0 0 1.5px var(--page-texte)}
+.alerte{display:none; max-width:820px; margin:8px auto; padding:10px 14px; border-radius:10px; background:var(--rouge); color:#fff; font-weight:700}
+.alerte.on{display:block}
+
+/* ===== Carte bristol (A5 paysage, 210×148) ===== */
+.cartes{max-width:820px; margin:16px auto 0; display:grid; gap:28px}
+.carte{position:relative; aspect-ratio:210/148; perspective:2200px; container-type:inline-size; cursor:pointer}
+.tourne{position:absolute; inset:0; transition:transform .6s cubic-bezier(.3,.7,.2,1); transform-style:preserve-3d}
+.carte.retournee .tourne{transform:rotateY(180deg)}
+.face{position:absolute; inset:0; overflow:hidden; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  font-size:1.82cqw; line-height:1.38; color:var(--encre); border-radius:1.2em;
+  box-shadow:0 1px 2px rgba(0,0,0,.12), 0 10px 24px rgba(0,0,0,.14);
+  background:
+    linear-gradient(90deg, transparent 2.6em, var(--marge) 2.6em, var(--marge) calc(2.6em + 1.5px), transparent calc(2.6em + 1.5px)),
+    repeating-linear-gradient(180deg, transparent 0 calc(1.38em - 1px), var(--ligne) calc(1.38em - 1px) 1.38em) 0 4.2em / 100% 100% no-repeat,
+    var(--papier);
+  padding:0 1.4em 1em 3.4em; display:flex; flex-direction:column}
+.verso{transform:rotateY(180deg)}
+.face.deborde{outline:4px solid var(--rouge); outline-offset:-4px}
+
+.bandeau{display:flex; gap:.8em; align-items:center; margin:0 -1.4em 0 -3.4em; padding:.55em 1.4em .55em 3.4em;
+  background:var(--accent); color:#fff; font-weight:800; font-size:.82em; letter-spacing:.04em; text-transform:uppercase}
+.bandeau .chap{opacity:.85; font-weight:700}
+.bandeau .num{margin-left:auto; font-family:Caveat,cursive; font-size:1.5em; text-transform:none; letter-spacing:0}
+.titre{font-family:Caveat,cursive; font-weight:700; font-size:2.5em; line-height:1; margin:.2em 0 .15em; color:var(--accent)}
+.titre small{font-size:.5em; color:var(--doux); font-weight:500}
+
+.grille{display:grid; grid-template-columns:1.12fr 1fr; gap:1em; flex:1; min-height:0}
+.col{display:flex; flex-direction:column; gap:.55em; min-height:0}
+h3{margin:0 0 .15em; font-size:.78em; text-transform:uppercase; letter-spacing:.07em; font-weight:800}
+p,ul,ol{margin:0}
+ul,ol{padding-left:1.2em}
+mark{background:linear-gradient(transparent 45%, var(--jaune) 45% 92%, transparent 92%); color:inherit; padding:0 .1em; font-weight:700}
+.formule{display:block; text-align:center; font-weight:800; font-size:1.15em; margin:.3em 0; padding:.25em .4em;
+  border:2px solid var(--accent); border-radius:.4em; background:var(--accent-pale)}
+.essentiel{font-size:1.02em}
+.exemple{border-left:.3em solid var(--accent); background:var(--accent-pale); padding:.35em .6em; border-radius:0 .5em .5em 0}
+.exemple h3{color:var(--accent)}
+.piege{background:var(--rouge-pale); border:1.5px dashed var(--rouge); padding:.35em .6em; border-radius:.5em}
+.piege h3{color:var(--rouge)}
+.ko{color:var(--rouge); font-weight:700}
+.ok{color:var(--vert); font-weight:700}
+.mnemo{background:var(--jaune); padding:.45em .7em .5em; transform:rotate(-1.3deg); box-shadow:0 .25em .5em rgba(0,0,0,.12);
+  font-family:Caveat,cursive; font-size:1.3em; line-height:1.15}
+.mnemo h3{font-family:Nunito,sans-serif; font-size:.6em}
+.schema{margin:0; flex:1; min-height:0; display:flex; align-items:center; justify-content:center}
+.schema svg{width:100%; height:100%; max-height:100%; overflow:visible}
+
+/* SVG : classes de dessin */
+.trait{stroke:var(--encre); stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round}
+.trait.accent{stroke:var(--accent); stroke-width:3}
+.trait.rouge{stroke:var(--rouge)}
+.trait.fin{stroke-width:1.2}
+.trait.pointille{stroke-dasharray:4 4}
+.leger{fill:var(--accent-pale)}
+.label{font-family:Caveat,cursive; font-size:17px; fill:var(--encre)}
+.label-p{font-family:Nunito,sans-serif; font-size:11px; fill:var(--doux)}
+text.accent{fill:var(--accent); font-weight:700}
+text.rouge{fill:var(--rouge)}
+
+/* Verso */
+.exo{background:#fff; border:1.5px solid var(--accent); border-radius:.6em; padding:.45em .7em}
+.exo h3{color:var(--accent)}
+.exo .enonce{font-style:italic; margin-bottom:.3em}
+.exo ol li{margin-bottom:.12em}
+.quiz h3{color:var(--accent)}
+.quiz ol li{margin-bottom:.3em}
+.retenir{margin-top:auto; font-family:Caveat,cursive; font-size:1.35em; line-height:1.15; border-top:2px solid var(--accent); padding-top:.25em}
+.reponses{font-size:.8em; color:var(--doux); transform:rotate(180deg); border:1px dashed var(--doux); border-radius:.5em; padding:.3em .6em;
+  filter:blur(3px); transition:filter .3s, transform .4s; cursor:pointer}
+.reponses.vue{filter:none; transform:none; color:var(--encre)}
+.reponses b{color:var(--accent)}
+
+/* ===== Impression : chaque face = une page A5 paysage, recto puis verso ===== */
+@page{size:A5 landscape; margin:0}
+@media print{
+  body{background:none; padding:0}
+  .barre,.alerte{display:none!important}
+  .cartes{display:block; max-width:none; margin:0}
+  .carte{width:210mm; aspect-ratio:auto; perspective:none}
+  .tourne{position:static; transform:none!important}
+  .face{position:relative; width:210mm; height:148mm; transform:none; border-radius:0; box-shadow:none; break-after:page;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .reponses{filter:none; transform:rotate(180deg)}
+  .face.deborde{outline:none}
+}
+@media (prefers-reduced-motion:reduce){.tourne{transition:none}}
+</style>
+</head>
+<body>
+
+<!-- Flèche réutilisable par tous les schémas : marker-end="url(#fleche)" -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="fleche" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:#1f2a44"/>
+    </marker>
+  </defs>
+</svg>
+
+<header class="barre">
+  <div>
+    <h1>Le théorème de Pythagore</h1>
+    <p>Maths · 4e/3e · 1 fiche — clique une carte pour la retourner</p>
+  </div>
+  <div class="actions">
+    <button class="second" id="toutes">Retourner tout</button>
+    <button id="imprimer">Imprimer</button>
+  </div>
+</header>
+<div class="alerte" id="alerte"></div>
+
+<main class="cartes">
+<!-- CARTES:DEBUT  (remplace tout ce qui suit jusqu'à CARTES:FIN ; garde la structure d'une carte) -->
+
+<article class="carte" data-matiere="maths" tabindex="0" aria-label="Fiche : théorème de Pythagore">
+ <div class="tourne">
+  <section class="face recto">
+    <header class="bandeau"><span>Maths</span><span class="chap">Géométrie · 4e</span><span class="num">1/1</span></header>
+    <h2 class="titre">Le théorème de Pythagore</h2>
+    <div class="grille">
+      <div class="col">
+        <div class="essentiel">
+          <p>Dans un triangle <mark>rectangle</mark>, le carré de l'<mark>hypoténuse</mark> est égal à la somme des carrés des deux autres côtés.</p>
+          <span class="formule">ABC rectangle en A ⟹ BC² = AB² + AC²</span>
+          <p><b>Réciproque :</b> si BC² = AB² + AC², alors ABC est rectangle en A.</p>
+        </div>
+        <div class="exemple">
+          <h3>Exemple</h3>
+          <p>AB = 3 cm, AC = 4 cm → BC² = 9 + 16 = 25, donc BC = √25 = <b>5 cm</b>.</p>
+        </div>
+        <div class="piege">
+          <h3>Piège</h3>
+          <p><span class="ko">✗ BC = 3 + 4 = 7</span> → <span class="ok">✓ on additionne les carrés, puis racine.</span> Et jamais sans angle droit !</p>
+        </div>
+      </div>
+      <div class="col">
+        <figure class="schema">
+          <svg viewBox="0 0 300 200" role="img" aria-label="Triangle ABC rectangle en A, côtés 3, 4 et 5 cm">
+            <path class="leger" d="M60,40 L60,160 L220,160 Z"/>
+            <path class="trait" d="M60,40 L60,160 L220,160"/>
+            <path class="trait accent" d="M60,40 L220,160"/>
+            <path class="trait fin" d="M60,146 H74 V160"/>
+            <text class="label" x="44" y="178">A</text>
+            <text class="label" x="44" y="38">B</text>
+            <text class="label" x="226" y="178">C</text>
+            <text class="label" x="22" y="106">3 cm</text>
+            <text class="label" x="122" y="182">4 cm</text>
+            <text class="label accent" x="150" y="80">hypoténuse</text>
+            <text class="label accent" x="160" y="97">= 5 cm</text>
+            <text class="label-p" x="150" y="40">le plus long côté,</text>
+            <text class="label-p" x="150" y="54">en face de l'angle droit</text>
+            <text class="label-p" x="80" y="143">angle droit</text>
+          </svg>
+        </figure>
+        <div class="mnemo">
+          <h3>Pour retenir</h3>
+          « L'hypoténuse est toute seule de son côté du = ».<br>Triangle 3-4-5 : la corde à 12 nœuds des bâtisseurs.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="face verso">
+    <header class="bandeau"><span>Maths</span><span class="chap">Je m'entraîne</span><span class="num">1/1</span></header>
+    <div class="grille">
+      <div class="col">
+        <div class="exo">
+          <h3>Exercice corrigé</h3>
+          <p class="enonce">Une échelle de 5 m est posée contre un mur vertical, son pied à 1,4 m du mur. À quelle hauteur touche-t-elle le mur ?</p>
+          <ol>
+            <li>Le mur est perpendiculaire au sol → <b>triangle rectangle</b> (je le justifie toujours).</li>
+            <li>L'échelle est en face de l'angle droit → c'est l'<b>hypoténuse</b>.</li>
+            <li>h² + 1,4² = 5² donc h² = 25 − 1,96 = 23,04.</li>
+            <li>h = √23,04 = <b>4,8 m</b>. Je vérifie : 4,8 &lt; 5 ✓ (un côté est plus court que l'hypoténuse).</li>
+          </ol>
+        </div>
+      </div>
+      <div class="col">
+        <div class="quiz">
+          <h3>Quiz</h3>
+          <ol>
+            <li>Comment s'appelle le côté opposé à l'angle droit ?</li>
+            <li>EFG rectangle en F, EF = 6, FG = 8. Calcule EG.</li>
+            <li>Un triangle de côtés 5, 12, 13 est-il rectangle ?</li>
+            <li>RST rectangle en S, RT = 10, RS = 6. A-t-on ST = 4 ?</li>
+          </ol>
+        </div>
+        <div class="reponses" title="Clique pour voir les réponses">
+          <b>1.</b> L'hypoténuse. <b>2.</b> EG² = 36 + 64 = 100, EG = 10. <b>3.</b> 13² = 169 = 25 + 144 → oui (réciproque). <b>4.</b> Non ! ST² = 100 − 36 = 64, ST = 8.
+        </div>
+        <p class="retenir">Si tu ne retiens qu'une chose : angle droit ⟹ hypoténuse² = somme des carrés des deux autres côtés.</p>
+      </div>
+    </div>
+  </section>
+ </div>
+</article>
+
+<!-- CARTES:FIN -->
+</main>
+
+<script>
+const cartes = [...document.querySelectorAll('.carte')];
+cartes.forEach(c => {
+  c.addEventListener('click', e => { if (!e.target.closest('.reponses')) c.classList.toggle('retournee'); });
+  c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.classList.toggle('retournee'); } });
+});
+document.querySelectorAll('.reponses').forEach(r => r.addEventListener('click', () => r.classList.toggle('vue')));
+document.getElementById('toutes').onclick = () => {
+  const versVerso = cartes.some(c => !c.classList.contains('retournee'));
+  cartes.forEach(c => c.classList.toggle('retournee', versVerso));
+};
+document.getElementById('imprimer').onclick = () => print();
+
+// Contrôle qualité : signale toute face dont le contenu déborde de la carte.
+function verifier() {
+  const fautives = [];
+  document.querySelectorAll('.face').forEach(f => {
+    const deborde = f.scrollHeight > f.clientHeight + 2 || f.scrollWidth > f.clientWidth + 2;
+    f.classList.toggle('deborde', deborde);
+    if (deborde) fautives.push((f.closest('.carte').querySelector('.titre')?.textContent || 'carte') + (f.classList.contains('verso') ? ' (verso)' : ' (recto)'));
+  });
+  const a = document.getElementById('alerte');
+  a.textContent = fautives.length ? 'Contenu trop long, à raccourcir ou couper : ' + fautives.join(' · ') : '';
+  a.classList.toggle('on', fautives.length > 0);
+  window.fichesDebordent = fautives;
+}
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(verifier);
+addEventListener('resize', verifier);
+</script>
+</body>
+</html>
